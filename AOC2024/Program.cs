@@ -8,6 +8,7 @@ namespace AOC2024
 		{
 			ICollection<IDaySolver> daySolvers = [
 				new Day1Solver(),
+				new Day2Solver(),
 				];
 
 			Console.WriteLine("Advent of Code 2023");
