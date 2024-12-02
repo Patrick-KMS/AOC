@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35506.116
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AOC2024", "AOC2024\AOC2024.csproj", "{5F969267-BAB9-48F0-8ABF-385E6BEC52C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AOC2024Tests", "AOC2024Tests\AOC2024Tests.csproj", "{36CE5CF8-7AA7-4810-A64C-231523795BE8}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AOC2023", "AOC2023\AOC2023.csproj", "{73BCB088-CFFB-4278-93F8-F9A00777F135}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AOC2023Tests", "AOC2023Tests\AOC2023Tests.csproj", "{2AB1E01B-C588-4D65-8D54-7BB3A67339C8}"
@@ -18,6 +22,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5F969267-BAB9-48F0-8ABF-385E6BEC52C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F969267-BAB9-48F0-8ABF-385E6BEC52C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F969267-BAB9-48F0-8ABF-385E6BEC52C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F969267-BAB9-48F0-8ABF-385E6BEC52C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36CE5CF8-7AA7-4810-A64C-231523795BE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36CE5CF8-7AA7-4810-A64C-231523795BE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36CE5CF8-7AA7-4810-A64C-231523795BE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36CE5CF8-7AA7-4810-A64C-231523795BE8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{73BCB088-CFFB-4278-93F8-F9A00777F135}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{73BCB088-CFFB-4278-93F8-F9A00777F135}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73BCB088-CFFB-4278-93F8-F9A00777F135}.Release|Any CPU.ActiveCfg = Release|Any CPU
