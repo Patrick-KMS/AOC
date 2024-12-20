@@ -12,6 +12,7 @@ namespace AOC2024
 				new Day1Solver(),
 				new Day2Solver(),
                 new Day19Solver(),
+                new Day20Solver(),
                 ];
 
 			Console.WriteLine("Advent of Code 2023");
