@@ -1,8 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿namespace AOC2024.DaySolvers.Day02;
 
-namespace AOC2024.DaySolvers;
-
-public class Day2Solver : IDaySolver
+public class Day02Solver : IDaySolver
 {
 	public int Day => 1;
 	public string Title => "Red-Nosed Reports";
@@ -23,7 +21,6 @@ public class Day2Solver : IDaySolver
 		var saveReports = reports.Select(ValidateTollerateIsSave);
 		var summSaveReports = saveReports.Sum();
 		return summSaveReports;
-		return 0;
 	}
 
 	private int ValidateTollerateIsSave(IList<int> levels, int arg2)
@@ -32,7 +29,7 @@ public class Day2Solver : IDaySolver
 		{
 			var reducedLevels = levels.ToList();
 			reducedLevels.RemoveAt(i);
-			if(ValidateIsSave(reducedLevels, arg2) == 1)
+			if (ValidateIsSave(reducedLevels, arg2) == 1)
 			{
 				return 1;
 			}

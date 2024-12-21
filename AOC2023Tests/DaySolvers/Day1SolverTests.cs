@@ -5,7 +5,7 @@ namespace AOC2023Tests.DaySolvers;
 [TestClass()]
 public class Day1SolverTests
 {
-	private Day1Solver solver = new Day1Solver();
+	private readonly Day1Solver solver;
 
 	public Day1SolverTests()
 	{

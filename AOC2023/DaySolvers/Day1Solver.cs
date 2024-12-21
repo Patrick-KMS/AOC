@@ -25,10 +25,10 @@ public class Day1Solver : IDaySolver
 	}
 
 
+	private static readonly Regex FirstNumberRegex1 = new("([0-9])", RegexOptions.Compiled);
 	private static long GetCalibration1(string inputline, int arg2)
 	{
-		var firstNumberRegex = new Regex("([0-9])");
-		var numberMatches = firstNumberRegex.Matches(inputline);
+		var numberMatches = FirstNumberRegex1.Matches(inputline);
 		var first = numberMatches[0].Value;
 		var last = numberMatches[^1].Value;
 
@@ -39,10 +39,10 @@ public class Day1Solver : IDaySolver
 		return varcalibration;
 	}
 
+	private static readonly Regex FirstNumberRegex2 = new($"(?=([0-9]|one|two|three|four|five|six|seven|eight|nine))", RegexOptions.Compiled);
 	private static long GetCalibration2(string inputline, int arg2)
 	{
-		var firstNumberRegex = new Regex($"(?=([0-9]|one|two|three|four|five|six|seven|eight|nine))");
-		var numberMatches = firstNumberRegex.Matches(inputline);
+		var numberMatches = FirstNumberRegex2.Matches(inputline);
 		var first = numberMatches[0].Groups[1].Value;
 		var last = numberMatches[^1].Groups[1].Value;
 
@@ -55,40 +55,20 @@ public class Day1Solver : IDaySolver
 
 	private static long GetNumber(string numberInput)
 	{
-		switch (numberInput)
+		return numberInput switch
 		{
-			case "0":
-				return 0;
-			case "1":
-			case "one":
-				return 1;
-			case "2":
-			case "two":
-				return 2;
-			case "3":
-			case "three":
-				return 3;
-			case "4":
-			case "four":
-				return 4;
-			case "5":
-			case "five":
-				return 5;
-			case "6":
-			case "six":
-				return 6;
-			case "7":
-			case "seven":
-				return 7;
-			case "8":
-			case "eight":
-				return 8;
-			case "9":
-			case "nine":
-				return 9;
-			default:
-				throw new Exception($"Unexpected number: {numberInput}");
-		}
+			"0" => 0,
+			"1" or "one" => 1,
+			"2" or "two" => 2,
+			"3" or "three" => 3,
+			"4" or "four" => 4,
+			"5" or "five" => 5,
+			"6" or "six" => 6,
+			"7" or "seven" => 7,
+			"8" or "eight" => 8,
+			"9" or "nine" => (long)9,
+			_ => throw new ArgumentOutOfRangeException($"Unexpected number: {numberInput}"),
+		};
 	}
 
 	public string GetInput()

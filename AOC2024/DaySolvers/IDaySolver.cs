@@ -1,4 +1,4 @@
-﻿namespace AOC2024
+﻿namespace AOC2024.DaySolvers
 {
 	public interface IDaySolver
 	{

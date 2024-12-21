@@ -1,19 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AOC2024.DaySolvers;
+﻿using AOC2024.DaySolvers.Day02;
 
-namespace AOC2024Tests.DaySolvers
+namespace AOC2024Tests.DaySolvers.Day02
 {
 	[TestClass()]
-	public class Day2SolverTests
+	public class Day02SolverTests
 	{
-		private Day2Solver solver;
+		private readonly Day02Solver solver;
 
-		public Day2SolverTests()
+		public Day02SolverTests()
 		{
 			solver = new();
 		}

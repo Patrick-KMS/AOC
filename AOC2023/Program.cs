@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace AOC2023;
 
-internal class Program
+internal static class Program
 {
 	private static void Main(string[] args)
 	{

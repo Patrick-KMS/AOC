@@ -1,8 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿namespace AOC2024.DaySolvers.Day01;
 
-namespace AOC2024.DaySolvers;
-
-public class Day1Solver : IDaySolver
+public class Day01Solver : IDaySolver
 {
 	public int Day => 1;
 	public string Title => "Historian Hysteria";
@@ -10,8 +8,8 @@ public class Day1Solver : IDaySolver
 	public long SolvePart1(string input)
 	{
 		var inputLines = input.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
-		var leftList = inputLines.Select(line=>line.Split("   ")[0]).Select(int.Parse).Order().ToList();
-		var rightList = inputLines.Select(line=>line.Split("   ")[1]).Select(int.Parse).Order().ToList();
+		var leftList = inputLines.Select(line => line.Split("   ")[0]).Select(int.Parse).Order().ToList();
+		var rightList = inputLines.Select(line => line.Split("   ")[1]).Select(int.Parse).Order().ToList();
 		var distances = leftList.Zip(rightList, (leftNumber, rightNumber) => Math.Abs(leftNumber - rightNumber));
 		var distancesSum = distances.Sum();
 		return distancesSum;
