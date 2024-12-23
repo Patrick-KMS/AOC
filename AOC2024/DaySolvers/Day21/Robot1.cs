@@ -1,42 +1,68 @@
-﻿using System.Text;
+﻿using System.Collections.Concurrent;
+using System.Text;
 
 namespace AOC2024.DaySolvers.Day21
 {
-	public class Robot
+	public class Robot1
 	{
 		private readonly Dictionary<KeyType, Key> _directionalKeys;
 		private readonly Dictionary<KeyType, Key> _numericalKeys;
 		private readonly int _depth;
+		private readonly ConcurrentDictionary<(int, KeyType,KeyType), IReadOnlyCollection<KeyType>> _chache;
 
-		private Robot(Dictionary<KeyType, Key> directionalKeys, Dictionary<KeyType, Key> numericalKeys, int depth)
+		private Robot1(Dictionary<KeyType, Key> directionalKeys, Dictionary<KeyType, Key> numericalKeys, int depth)
 		{
 			_directionalKeys = directionalKeys;
 			_numericalKeys = numericalKeys;
 			_depth = depth;
+			_chache = new();
 		}
 
 		public IReadOnlyCollection<KeyType> GetMoves(IReadOnlyCollection<KeyType> input)
 		{
-			IReadOnlyCollection<KeyType> inputStart = [KeyType.KA, .. input];
-			var inputZip = inputStart.Zip(input);
-			var moves = inputZip
-				.AsParallel()
-				.AsOrdered()
-				.SelectMany(pair => GetMoves(pair.First, pair.Second, _depth))
-				.ToList();
+			var moves = GetMoves(input, _depth);
 
 			Log(input, moves);
 			return moves;
 		}
 
-		private List<KeyType> GetMoves(KeyType fromKeyType, KeyType toKeyType, int depth)
+		private IReadOnlyCollection<KeyType> GetMoves(IReadOnlyCollection<KeyType> input, int depth)
 		{
 			if (depth <= 0)
 			{
-				return new List<KeyType> { toKeyType };
+				return input;
 			}
 
-			var keys = depth == _depth ? _numericalKeys : _directionalKeys;
+			IReadOnlyCollection<KeyType> inputStart = [KeyType.KA, .. input];
+			var inputZip = inputStart.Zip(input);
+
+			var moves = new List<KeyType>();
+			foreach (var (from, to) in inputZip)
+			{
+				if (_chache.TryGetValue((depth, from, to), out var cached))
+				{
+					moves.AddRange(cached);
+					continue;
+				}
+
+				var paths = GetMoves(from, to, depth == _depth);
+				var minPath = paths
+					.Select(path => GetMoves(path, depth - 1))
+					.MinBy(path => path.Count);
+
+				if (minPath is not null)
+				{
+					_chache[(depth, from, to)] = minPath;
+					moves.AddRange(minPath); 
+				}
+			}
+
+			return moves;
+		}
+
+		private List<KeyType[]> GetMoves(KeyType fromKeyType, KeyType toKeyType, bool numericalKeys)
+		{
+			var keys = numericalKeys ? _numericalKeys : _directionalKeys;
 			var fromKey = keys[fromKeyType];
 			var fromRow = fromKey.Postition.Item1;
 			var fromCol = fromKey.Postition.Item2;
@@ -49,7 +75,7 @@ namespace AOC2024.DaySolvers.Day21
 			var avoidRow = avoidKey.Postition.Item1;
 			var avoidCol = avoidKey.Postition.Item2;
 
-			var moves = new List<KeyType>();
+			var moves = new List<KeyType[]>();
 
 			var nVert = Math.Abs(fromRow - toRow);
 			var nHoriz = Math.Abs(fromCol - toCol);
@@ -64,106 +90,74 @@ namespace AOC2024.DaySolvers.Day21
 
 			if (moveVert is not null && moveHoriz is null)
 			{
-				var newMoves = GetMovesInOrder(nVert, moveVert.Value, depth);
-				moves.AddRange(newMoves);
+				var newMoves = GetMovesInOrder(nVert, moveVert.Value);
+				moves.Add(newMoves);
 			}
 
 			if (moveVert is null && moveHoriz is not null)
 			{
-				var newMoves = GetMovesInOrder(nHoriz, moveHoriz.Value, depth);
-				moves.AddRange(newMoves);
+				var newMoves = GetMovesInOrder(nHoriz, moveHoriz.Value);
+				moves.Add(newMoves);
 			}
 
 			if (moveVert is not null && moveHoriz is not null)
 			{
 				if (fromCol == avoidCol && toRow == avoidRow)
 				{
-					var newMoves = GetMovesInOrder(nHoriz, moveHoriz.Value, nVert, moveVert.Value, depth);
-					moves.AddRange(newMoves);
+					var newMoves = GetMovesInOrder(nHoriz, moveHoriz.Value, nVert, moveVert.Value);
+					moves.Add(newMoves);
 				}
 				else if (fromRow == avoidRow && toCol == avoidCol)
 				{
-					var newMoves = GetMovesInOrder(nVert, moveVert.Value, nHoriz, moveHoriz.Value, depth);
-					moves.AddRange(newMoves);
+					var newMoves = GetMovesInOrder(nVert, moveVert.Value, nHoriz, moveHoriz.Value);
+					moves.Add(newMoves);
 				}
 				else
 				{
-					var newMovesVertFirst = GetMovesInOrder(nVert, moveVert.Value, nHoriz, moveHoriz.Value, depth);
-					var newMovesHorizFirst = GetMovesInOrder(nHoriz, moveHoriz.Value, nVert, moveVert.Value, depth);
-
-					if (newMovesHorizFirst.Count <= newMovesVertFirst.Count)
-					{
-						moves.AddRange(newMovesHorizFirst);
-					}
-					else
-					{
-						moves.AddRange(newMovesVertFirst);
-					}
+					var newMovesHorizFirst = GetMovesInOrder(nHoriz, moveHoriz.Value, nVert, moveVert.Value);
+					moves.Add(newMovesHorizFirst);
+					var newMovesVertFirst = GetMovesInOrder(nVert, moveVert.Value, nHoriz, moveHoriz.Value);
+					moves.Add(newMovesVertFirst);
 				}
 			}
 
 			return moves;
 		}
 
-		private static KeyType GetNullMoves()
+		private static KeyType[] GetNullMoves()
 		{
-			return KeyType.KA;
+			return [KeyType.KA];
 		}
 
-		private List<KeyType> GetMovesInOrder(int nFirst, KeyType movesFirst, int depth)
+		private static KeyType[] GetMovesInOrder(int nFirst, KeyType movesFirst)
 		{
-			var moves = new List<KeyType>();
-
-			var newMovesFirst = GetMoves(KeyType.KA, movesFirst, depth - 1);
-			moves.AddRange(newMovesFirst);
-			if (nFirst > 1)
+			var moves = new KeyType[nFirst + 1];
+			for (int n = 0; n < nFirst; n++)
 			{
-				for (int n = 0; n < nFirst - 1; n++)
-				{
-					var newMovesFirst2 = GetMoves(movesFirst, movesFirst, depth - 1);
-					moves.AddRange(newMovesFirst2);
-				}
+				moves[n] = movesFirst;
 			}
 
-			var newMovesA = GetMoves(movesFirst, KeyType.KA, depth - 1);
-			moves.AddRange(newMovesA);
-
+			moves[^1] = KeyType.KA;
 			return moves;
 		}
 
-		private List<KeyType> GetMovesInOrder(int nFirst, KeyType movesFirst, int nSecond, KeyType movesSecond, int depth)
+		private static KeyType[] GetMovesInOrder(int nFirst, KeyType movesFirst, int nSecond, KeyType movesSecond)
 		{
-			var moves = new List<KeyType>();
-
-			var newMovesFirst = GetMoves(KeyType.KA, movesFirst, depth - 1);
-			moves.AddRange(newMovesFirst);
-			if (nFirst > 1)
+			var moves = new KeyType[nFirst + nSecond + 1];
+			for (int n = 0; n < nFirst; n++)
 			{
-				for (int n = 0; n < nFirst - 1; n++)
-				{
-					var newMovesFirst2 = GetMoves(movesFirst, movesFirst, depth - 1);
-					moves.AddRange(newMovesFirst2);
-				}
+				moves[n] = movesFirst;
+			}
+			for (int n = 0; n < nSecond; n++)
+			{
+				moves[n + nFirst] = movesSecond;
 			}
 
-			var newMovesSecond = GetMoves(movesFirst, movesSecond, depth - 1);
-			moves.AddRange(newMovesSecond);
-			if (nSecond > 1)
-			{
-				for (int n = 0; n < nSecond - 1; n++)
-				{
-					var newMovesSecond2 = GetMoves(movesSecond, movesSecond, depth - 1);
-					moves.AddRange(newMovesSecond2);
-				}
-			}
-
-			var newMovesA = GetMoves(movesSecond, KeyType.KA, depth - 1);
-			moves.AddRange(newMovesA);
-
+			moves[^1] = KeyType.KA;
 			return moves;
 		}
 
-		public static Robot Create(int depth)
+		public static Robot1 Create(int depth)
 		{
 			var numericLayout = new KeyType[,] {
 				{ KeyType.K7, KeyType.K8, KeyType.K9 },
@@ -179,7 +173,7 @@ namespace AOC2024.DaySolvers.Day21
 			};
 			Dictionary<KeyType, Key> directionalKeys = GetKeys(directionalLayout);
 
-			var keypad = new Robot(directionalKeys, numericKeys, depth);
+			var keypad = new Robot1(directionalKeys, numericKeys, depth);
 			return keypad;
 		}
 
@@ -202,7 +196,7 @@ namespace AOC2024.DaySolvers.Day21
 			return keys;
 		}
 
-		private static void Log(IReadOnlyCollection<KeyType> input, List<KeyType> moves)
+		private static void Log(IReadOnlyCollection<KeyType> input, IReadOnlyCollection<KeyType> moves)
 		{
 			var sb = new StringBuilder();
 			foreach (var inputKey in input)
@@ -245,6 +239,5 @@ namespace AOC2024.DaySolvers.Day21
 
 			return keyChar;
 		}
-
 	}
 }

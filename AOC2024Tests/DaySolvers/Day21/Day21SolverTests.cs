@@ -68,7 +68,6 @@ namespace AOC2024Tests.DaySolvers.Day21
 			Assert.IsTrue(sw.ElapsedMilliseconds <= max, $"Elapsed: {sw.ElapsedMilliseconds}>{max}");
 		}
 
-		[Ignore("Takes too long")]
 		[TestMethod()]
 		public void SolvePart2_Example()
 		{
@@ -85,12 +84,11 @@ namespace AOC2024Tests.DaySolvers.Day21
 			var result = solver.SolvePart2(input);
 			sw.Stop();
 
-			Assert.AreEqual(285, result);
+			Assert.AreEqual(154115708116294, result);
 			var max = 50;
 			Assert.IsTrue(sw.ElapsedMilliseconds <= max, $"Elapsed: {sw.ElapsedMilliseconds}>{max}");
 		}
 
-		[Ignore("Takes too long")]
 		[TestMethod()]
 		public void SolvePart2_Input()
 		{
@@ -100,7 +98,7 @@ namespace AOC2024Tests.DaySolvers.Day21
 			var result = solver.SolvePart2(input);
 			sw.Stop();
 
-			Assert.AreEqual(1020244, result);
+			Assert.AreEqual(242337182910752, result);
 			var max = 50;
 			Assert.IsTrue(sw.ElapsedMilliseconds <= max, $"Elapsed: {sw.ElapsedMilliseconds}>{max}");
 		}

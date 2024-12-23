@@ -10,16 +10,16 @@ public partial class Day21Solver : IDaySolver
 		var numbers = input.Split(Environment.NewLine).Select(line => int.Parse(line.TrimEnd('A'))).ToArray();
 		var numbersKeyTypes = input.Split(Environment.NewLine).Select(GetKeyTypes).ToArray();
 
-		var robot = Robot.Create(3);
+		var robot = Robot1.Create(3);
 
 		var results = new List<IReadOnlyCollection<KeyType>>();
 		foreach (var number in numbersKeyTypes)
 		{
-			var movesRobot2 = robot.GetMoves(number);
-			results.Add(movesRobot2);
+			var result = robot.GetMoves(number);
+			results.Add(result);
 		}
 
-		var complexitys = results.Select((moves, i) => GetComplexity(numbers[i],moves));
+		var complexitys = results.Select((moves, i) => GetComplexity(numbers[i], moves.Count));
 		var sum = complexitys.Sum();
 
 		return sum;
@@ -30,11 +30,12 @@ public partial class Day21Solver : IDaySolver
 		var numbers = input.Split(Environment.NewLine).Select(line => int.Parse(line.TrimEnd('A'))).ToArray();
 		var numbersKeyTypes = input.Split(Environment.NewLine).Select(GetKeyTypes).ToArray();
 
-		var robot = Robot.Create(26);
+		var robot = Robot2.Create(26);
 
 		var results = numbersKeyTypes
 			.AsParallel()
 			.AsOrdered()
+			.WithExecutionMode(ParallelExecutionMode.ForceParallelism)
 			.Select(robot.GetMoves)
 			.ToList();
 
@@ -44,9 +45,8 @@ public partial class Day21Solver : IDaySolver
 		return sum;
 	}
 
-	private static long GetComplexity(int number, IReadOnlyCollection<KeyType> collection)
+	private static long GetComplexity(int number, long length)
 	{
-		var length = collection.Count;
 		var complexity = number * length;
 		return complexity;
 	}

@@ -27,7 +27,7 @@ namespace AOC2024Tests.DaySolvers.Day21
 		{
 			var keys = input.Select(KeyTypeExtensions.GetKeyType).ToArray();
 
-			var robot = Robot.Create(1);
+			var robot = Robot1.Create(1);
 			var moves = robot.GetMoves(keys);
 
 			var moveStrings = moves.Select(key => key.GetChar()).ToArray();
@@ -57,7 +57,7 @@ namespace AOC2024Tests.DaySolvers.Day21
 		{
 			var keys = input.Select(KeyTypeExtensions.GetKeyType).ToArray();
 
-			var robot = Robot.Create(2);
+			var robot = Robot1.Create(2);
 			var moves = robot.GetMoves(keys);
 
 			var moveStrings = moves.Select(key => key.GetChar()).ToArray();
@@ -86,7 +86,7 @@ namespace AOC2024Tests.DaySolvers.Day21
 		{
 			var keys = input.Select(KeyTypeExtensions.GetKeyType).ToArray();
 
-			var robot = Robot.Create(3);
+			var robot = Robot1.Create(3);
 			var moves = robot.GetMoves(keys);
 
 			var moveStrings = moves.Select(key => key.GetChar()).ToArray();
@@ -104,7 +104,7 @@ namespace AOC2024Tests.DaySolvers.Day21
 		{
 			var keys = input.Select(KeyTypeExtensions.GetKeyType).ToArray();
 
-			var robot1 = Robot.Create(3);
+			var robot1 = Robot1.Create(3);
 			var moves1 = robot1.GetMoves(keys);
 
 			var moveStrings = moves1.Select(key => key.GetChar()).ToArray();
